@@ -1,0 +1,14 @@
+apiVersion: backstage.io/v1alpha1
+kind: API
+metadata:
+  name: sample-orders-api
+  description: Draft Orders API contract, governed via shared data models.
+  tags:
+    - draft
+    - orders
+spec:
+  type: openapi
+  lifecycle: experimental
+  owner: guest
+  definition:
+    $text: ./openapi.yaml

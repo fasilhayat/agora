@@ -1,0 +1,12 @@
+# Node / Backstage (scaffolded inside Docker, but ignore if ever generated on host)
+node_modules/
+yarn-error.log
+*.log
+
+# Docker / OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
