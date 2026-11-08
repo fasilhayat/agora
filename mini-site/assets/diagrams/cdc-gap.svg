@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 520" font-family="Segoe UI, Arial, sans-serif">
+  <defs>
+    <marker id="arrow6" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1872c4"/>
+    </marker>
+    <marker id="arrow6b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#c43d3d"/>
+    </marker>
+  </defs>
+  <rect width="900" height="520" fill="#ffffff"/>
+  <text x="450" y="30" text-anchor="middle" fill="#1c2026" font-size="18" font-weight="700">Where the "One Workflow Fits Everything" Claim Breaks</text>
+
+  <!-- left column: hand-authored -->
+  <text x="220" y="65" text-anchor="middle" fill="#1e8f5f" font-size="13" font-weight="700">Hand-authored REST contract</text>
+
+  <rect x="90" y="85" width="260" height="60" rx="8" fill="#f3f5f8" stroke="#1e8f5f"/>
+  <text x="220" y="110" text-anchor="middle" fill="#1c2026" font-size="12">Human designer</text>
+  <text x="220" y="128" text-anchor="middle" fill="#5b6472" font-size="11">picks/submits governed fields</text>
+
+  <rect x="90" y="175" width="260" height="60" rx="8" fill="#f3f5f8" stroke="#1e8f5f"/>
+  <text x="220" y="200" text-anchor="middle" fill="#1c2026" font-size="12">openapi.yaml in editor</text>
+  <text x="220" y="218" text-anchor="middle" fill="#5b6472" font-size="11">$ref governed schema</text>
+
+  <rect x="90" y="265" width="260" height="60" rx="8" fill="#f3f5f8" stroke="#1e8f5f"/>
+  <text x="220" y="290" text-anchor="middle" fill="#1c2026" font-size="12">Spectral lint + Git PR</text>
+  <text x="220" y="308" text-anchor="middle" fill="#5b6472" font-size="11">works great — proved on Tiwaz</text>
+
+  <line x1="220" y1="145" x2="220" y2="175" stroke="#1e8f5f" stroke-width="2" marker-end="url(#arrow6)"/>
+  <line x1="220" y1="235" x2="220" y2="265" stroke="#1e8f5f" stroke-width="2" marker-end="url(#arrow6)"/>
+
+  <!-- right column: CDC -->
+  <text x="680" y="65" text-anchor="middle" fill="#c43d3d" font-size="13" font-weight="700">CDC-derived Kafka event schema</text>
+
+  <rect x="550" y="85" width="260" height="60" rx="8" fill="#f3f5f8" stroke="#c43d3d"/>
+  <text x="680" y="110" text-anchor="middle" fill="#1c2026" font-size="12">Database table exists</text>
+  <text x="680" y="128" text-anchor="middle" fill="#5b6472" font-size="11">no human "designs" anything</text>
+
+  <rect x="550" y="175" width="260" height="60" rx="8" fill="#f3f5f8" stroke="#c43d3d"/>
+  <text x="680" y="196" text-anchor="middle" fill="#1c2026" font-size="12">CDC connector (Debezium)</text>
+  <text x="680" y="214" text-anchor="middle" fill="#5b6472" font-size="11">auto-generates event schema</text>
+
+  <rect x="550" y="265" width="260" height="80" rx="8" fill="#f3f5f8" stroke="#c43d3d"/>
+  <text x="680" y="288" text-anchor="middle" fill="#1c2026" font-size="12">PK / FK columns in payload</text>
+  <text x="680" y="306" text-anchor="middle" fill="#5b6472" font-size="11">structural, not business attrs</text>
+  <text x="680" y="322" text-anchor="middle" fill="#5b6472" font-size="11">"approved definition" = category error</text>
+
+  <line x1="680" y1="145" x2="680" y2="175" stroke="#c43d3d" stroke-width="2" marker-end="url(#arrow6b)"/>
+  <line x1="680" y1="235" x2="680" y2="265" stroke="#c43d3d" stroke-width="2" marker-end="url(#arrow6b)"/>
+
+  <rect x="550" y="375" width="260" height="90" rx="8" fill="#f3f5f8" stroke="#c0691a"/>
+  <text x="680" y="400" text-anchor="middle" fill="#1c2026" font-size="12" font-weight="600">Needs instead:</text>
+  <text x="680" y="420" text-anchor="middle" fill="#5b6472" font-size="11">Schema-registry compatibility checks</text>
+  <text x="680" y="438" text-anchor="middle" fill="#5b6472" font-size="11">+ lineage/relationship tagging</text>
+  <text x="680" y="454" text-anchor="middle" fill="#5b6472" font-size="11">(not an editor problem at all)</text>
+
+  <line x1="680" y1="345" x2="680" y2="375" stroke="#c0691a" stroke-width="2" marker-end="url(#arrow6)"/>
+
+  <text x="450" y="500" text-anchor="middle" fill="#5b6472" font-size="12">Neither a custom editor nor a standard one solves the right column — it needs a different, composable component.</text>
+</svg>

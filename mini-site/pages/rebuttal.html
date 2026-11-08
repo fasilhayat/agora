@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agora — Rebuttal</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand"><span class="dot"></span> Agora</div>
+    <nav class="primary">
+      <a href="../index.html">Start Here</a>
+      <a href="readme.html">Overview</a>
+      <a href="guide.html">Guide</a>
+      <a href="contract-first.html">Contract-First</a>
+      <a href="decision.html">Decision Record</a>
+      <a href="rebuttal.html" class="active">Rebuttal</a>
+      <a href="roadmap.html">Roadmap</a>
+      <a href="agents.html">Agent Notes</a>
+    </nav>
+  </div>
+</div>
+
+<main>
+  <div class="hero">
+    <span class="badge">Companion to the Decision Record</span>
+    <h1>Agora Proves the "Standard Tooling" Alternative Works</h1>
+    <p class="lede">Company X's decision doc claims "no tool on the market can
+    deliver this workflow." This repo is a working counter-example, using a
+    real external service — <strong>Tiwaz</strong> — as the proof case, not a toy.</p>
+  </div>
+
+  <h2>The claim being tested</h2>
+  <blockquote>No tool on the market can deliver this workflow. Commercial tools focus
+  on generic API design and do not integrate with [our] data governance,
+  standards and internal data sources.</blockquote>
+  <blockquote>The Company X-specific parts (validation rules, data governance
+  definitions) can be delivered as rulesets and APIs/MCPs that work with
+  standard tools... Git + PR review + Spectral + standard editor + governance
+  API/MCP. <em>— Colleague B</em></blockquote>
+
+  <h2>Component-by-component mapping</h2>
+  <table>
+    <tr><th>Target State requirement</th><th>Standard component used here</th><th>Where</th></tr>
+    <tr><td>Usable by non-developers</td><td>Swagger Editor (real tool, not emulated)</td><td><code>docker-compose.yml</code>, :8082</td></tr>
+    <tr><td>Integrate with governed data definitions</td><td><code>$ref</code> into a shared-schema registry</td><td><code>governance/shared-models.yaml</code></td></tr>
+    <tr><td>Integrate with API standards</td><td>Spectral custom ruleset</td><td><code>governance/.spectral.yaml</code></td></tr>
+    <tr><td>Must support Contract First</td><td>Design-first authoring, Git-tracked</td><td><code>apis/sample-orders-api/</code></td></tr>
+    <tr><td>Integrate well with GitHub</td><td>Git repo is the source of truth, PR review</td><td>this repo itself</td></tr>
+    <tr><td>Validation in pipeline + dev tools</td><td>Same ruleset, local CLI and CI</td><td><code>CONTRACT-FIRST.md</code> Steps 3 &amp; 4</td></tr>
+    <tr><td>Flexible, developer's-choice tooling</td><td>Plain YAML/JSON in Git — any IDE works</td><td>no lock-in anywhere</td></tr>
+    <tr><td>Catalog / discoverability</td><td>Backstage, real tool, API docs plugin</td><td><code>backstage/</code>, :3000</td></tr>
+  </table>
+
+  <h2>Tiwaz as the non-hypothetical proof</h2>
+  <ol>
+    <li><strong>Pulled the real contract</strong> from Tiwaz's live Swagger endpoint — no code changes, no special access.</li>
+    <li><strong>Cataloged it</strong> in Backstage via a standard <code>type: url</code> location.</li>
+    <li><strong>Linted it</strong> against the governance ruleset: <span class="tag bad">95 problems (33 errors)</span> vs. <span class="tag warn">49 (0 errors)</span> from stock rules.</li>
+    <li><strong>Defined the CI gate</strong> using the exact same ruleset file used locally.</li>
+  </ol>
+  <p>None of this required forking an editor, building an MCP server, or
+  committing to 5-7&nbsp;MM/year of ongoing maintenance.</p>
+
+  <h2>Answering the specific "cons" raised against Alternative 1</h2>
+  <table>
+    <tr><th>Con raised</th><th>Answer, demonstrated in this repo</th></tr>
+    <tr><td>"Built-in validation may not cover all desired validations"</td><td>Spectral is a general-purpose linter with a fully custom DSL — arbitrary custom logic supported today.</td></tr>
+    <tr><td>"Deep integration with custom services not possible"</td><td>Governance source here is just an HTTP-served YAML file any OpenAPI tool can <code>$ref</code>.</td></tr>
+    <tr><td>"Difficult to track who committed changes"</td><td>No webhook in this design — Git is the source of truth, every change has a normal commit author.</td></tr>
+    <tr><td>"Ongoing license cost"</td><td>Swagger Editor, Spectral, Backstage, Git/GitHub are open-source. Zero incremental license cost.</td></tr>
+    <tr><td>"Cannot integrate with data governance"</td><td>Directly disproved by the Tiwaz lint run against a real production contract.</td></tr>
+  </table>
+
+  <h2 id="caveats">Honest caveats: where "one workflow fits everything" breaks</h2>
+  <p>Not every part of the decision doc's argument is wrong — and the gaps
+  reveal a bigger problem with their approach than with standard tooling.</p>
+
+  <h3>Gap 1 — AsyncAPI / Kafka editing is genuinely weaker in standard tooling today</h3>
+  <div class="callout warn">
+    <p>Swagger Editor is OpenAPI-only. Agora has no AsyncAPI editing or linting
+    story yet. This is a <strong>legitimate, unanswered gap</strong>, not a vendor
+    complaint in disguise like most of their other cons.</p>
+  </div>
+
+  <h3>Gap 2 — CDC-derived Kafka schemas don't fit either workflow</h3>
+  <p>Schemas produced by <strong>CDC connectors</strong> (e.g. Debezium reading a database's
+  change log) aren't designed by anyone — the schema is generated automatically
+  from the source table's columns the moment the table exists. There is no
+  human sitting in an editor — custom or standard — picking governed field
+  definitions. The decision doc's entire proposed workflow (find/reuse
+  definitions → link to fields → submit for approval) has nothing to attach to.</p>
+
+  <div class="diagram">
+    <img src="../assets/diagrams/cdc-gap.svg" alt="Diagram contrasting hand-authored REST contracts with CDC-derived Kafka schemas">
+    <figcaption>Neither a custom editor nor a standard one solves the CDC case — it needs a different component entirely.</figcaption>
+  </div>
+
+  <p>This matters most for <strong>primary/foreign key fields</strong> in CDC payloads:</p>
+  <ul>
+    <li>A CDC-emitted <code>customer_id: integer</code> FK is structural plumbing, not a
+    business attribute — it's a pointer to the <code>Customer</code> entity, not a value
+    of one. Forcing it through a rule like <code>governed-schema-description</code>
+    produces a vacuous description or fabricates meaning that isn't there.</li>
+    <li>The thing worth governing for an FK is the <strong>relationship</strong> ("this
+    event's <code>customer_id</code> references the <code>Customer</code> entity"), which belongs in
+    a data-lineage/ER model, not the same field-definition catalog as <code>Email</code>.</li>
+    <li>CDC schema change-safety is a <strong>compatibility</strong> problem (backward/forward
+    via a real schema registry), not a descriptive-linting problem. Spectral-style
+    rules are close to meaningless against a schema shape dictated by a DBA's
+    table design that can change at any time.</li>
+  </ul>
+
+  <h3>Why this is an argument for standard tooling, not against it</h3>
+  <p><strong>Neither</strong> a custom editor <strong>nor</strong> Swagger Editor solves the CDC/FK case,
+  because it isn't an editor problem at all — it's a schema-registry-and-lineage
+  problem. The decision doc's mistake is assuming one integrated workflow
+  covers every contract-producing scenario in the company. It doesn't, and
+  building a single monolithic custom tool around that one workflow
+  <strong>locks out</strong> the scenarios that don't fit the assumption.</p>
+
+  <div class="callout good">
+    <p>Standard, composable tooling is more resilient here precisely because
+    it isn't one tool trying to cover every case:</p>
+    <ul>
+      <li>Spectral + a shared-schema registry handles hand-authored REST contracts (proven here against Tiwaz).</li>
+      <li>A real schema registry with compatibility-mode enforcement is the correct tool for CDC/Kafka payload safety — a separate, already-standard component, not something the OpenAPI editor needs to also become.</li>
+      <li>A lineage/ER layer handles FK/relationship governance, tagging surrogate keys as structural rather than forcing them into the business-glossary field catalog.</li>
+    </ul>
+  </div>
+
+  <p>Painting all of this with one brush trades flexibility for the appearance
+  of completeness. When a new scenario shows up that doesn't match the
+  assumed workflow, a monolithic custom tool has to be extended or bent to
+  fit; a composable standard-tooling stack just <strong>adds the missing
+  component</strong> alongside the ones already working, without touching the
+  editor, the ruleset, or the contracts already governed.</p>
+
+  <h2>What this doesn't claim</h2>
+  <p>This repo doesn't yet replicate the "AI drafts new data definitions, Data
+  Governance approves them" submission workflow. That's naturally a small
+  <strong>API/service to build</strong>, not a reason to also own the editor.</p>
+
+  <h2>Bottom line</h2>
+  <p>Agora is a working, Git-native, Contract-First pipeline built entirely
+  from standard, unmodified components, validated against a real production
+  API rather than a synthetic example. It directly contradicts "no tool on
+  the market can deliver this workflow" for the REST/OpenAPI case, at a
+  fraction of the ~5-7&nbsp;MM/year estimated ongoing cost of Alternative 2.</p>
+  <p>Where real gaps remain (AsyncAPI editing, CDC-derived schema governance),
+  the fix is to add the missing standard component for that specific
+  scenario — not to retroactively justify a single monolithic editor as the
+  answer to every contract-producing scenario in the company.</p>
+
+  <div class="pagenav">
+    <a href="decision.html">← Decision Record</a>
+    <a href="roadmap.html">Implementation Roadmap →</a>
+  </div>
+</main>
+
+<footer>Agora — Rebuttal</footer>
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agora — Decision Record</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand"><span class="dot"></span> Agora</div>
+    <nav class="primary">
+      <a href="../index.html">Start Here</a>
+      <a href="readme.html">Overview</a>
+      <a href="guide.html">Guide</a>
+      <a href="contract-first.html">Contract-First</a>
+      <a href="decision.html" class="active">Decision Record</a>
+      <a href="rebuttal.html">Rebuttal</a>
+      <a href="roadmap.html">Roadmap</a>
+      <a href="agents.html">Agent Notes</a>
+    </nav>
+  </div>
+</div>
+
+<main>
+  <div class="hero">
+    <span class="badge">De-identified case study</span>
+    <h1>OpenAPI / Event Contract Tooling — Architectural Decision</h1>
+    <p class="lede">All references to the original company name have been replaced
+    with <strong>Company X</strong>. See <a href="rebuttal.html">the Rebuttal</a> for why
+    this repo contradicts the "no standard tool can do this" argument below.</p>
+  </div>
+
+  <h2>Current State</h2>
+  <p>Sparsely integrated and/or unsupported tools with limited support for the
+  design and review process:</p>
+  <ul>
+    <li><strong>SwaggerHub</strong> — decent editor, no Company X specific integration, good
+    collaboration/review, limited validation, GitHub integration only via webhook
+    (requires IT Security approval for direct repo access).</li>
+    <li><strong>Text/file editors</strong> (VS Code, Notepad++) plus an unsupported in-house
+    "Company X OpenAPI Editor" with good internal data-source integration but
+    weak governance/review features.</li>
+  </ul>
+
+  <div class="diagram">
+    <img src="../assets/diagrams/current-state.svg" alt="Current state diagram: editors, repository, webhook to APIM, no attribution">
+  </div>
+
+  <h2>Target State requirements</h2>
+  <ul>
+    <li>Usable by non-developers (e.g. business analysts).</li>
+    <li>Integrates with company tools/data sources: governance definitions, API standards, existing API definitions.</li>
+    <li>Must support <strong>Contract First</strong> (the selected standard for business APIs).</li>
+    <li>Integrates well with GitHub.</li>
+    <li>Validations available in both the build pipeline and dev tools.</li>
+    <li><em>Nice to have:</em> flexible, developer's-choice tooling.</li>
+  </ul>
+
+  <h2>Alternative 1 — SwaggerHub + custom validation rules</h2>
+  <div class="cards">
+    <div class="card">
+      <h3><span class="tag good">Pros</span></h3>
+      <p>COTS. Supports Contract First. 8 years in production use. Deterministic validations in editor.</p>
+    </div>
+    <div class="card">
+      <h3><span class="tag bad">Cons</span></h3>
+      <p>Validation rules may not cover everything. Slow vendor progress, breaking changes. No deep custom integration. License + ops cost ~1&nbsp;MM/yr, +3-4&nbsp;MM/yr for MCP-style features. Attribution lost via webhook.</p>
+    </div>
+  </div>
+
+  <h2>Alternative 2 — Custom "Integration Contract Studio" (chosen)</h2>
+  <div class="diagram">
+    <img src="../assets/diagrams/alternative-2-target.svg" alt="Alternative 2 diagram: custom editor with governance, standards, and MCP tightly coupled inside it">
+  </div>
+  <div class="cards">
+    <div class="card">
+      <h3><span class="tag good">Pros</span></h3>
+      <p>Highly tuned to internal requirements. Tracks commits to a user in Git. Usable by non-developers. No license cost. Supports Kafka event topics more naturally than SwaggerHub.</p>
+    </div>
+    <div class="card">
+      <h3><span class="tag bad">Cons</span></h3>
+      <p>Not COTS. Initial build cost. Ongoing maintenance ~2&nbsp;MM/yr editor + 3&nbsp;MM/yr developer support (partly already hidden cost today) + 3-4&nbsp;MM/yr for MCP servers.</p>
+    </div>
+  </div>
+
+  <h2>Alternative 3 — Market research</h2>
+  <p>Survey Postman, Redocly, Apidog, Scalar, etc. Recent desktop research found
+  low probability of a commercial tool significantly better than SwaggerHub;
+  time-consuming with an uncertain payoff.</p>
+
+  <h2>Decision</h2>
+  <p>The decision is to use <strong>Alternative 2</strong>. Key strengthened argument added
+  after initial rejection:</p>
+
+  <blockquote>
+    The key requirement is not a better OpenAPI editor, but an integrated
+    contract-design workflow for both APIs and Kafka event topics — one that
+    makes data governance and integration standards practical to follow.
+    Designers need to find and reuse approved data definitions, link them to
+    API and event fields, and submit proposed new definitions for governance
+    approval. This moves governance from "spreadsheet governance" to
+    "operational governance." No tool on the market can deliver this workflow.
+  </blockquote>
+
+  <h2>Review comments</h2>
+  <div class="callout warn">
+    <p><strong>Colleague B:</strong> This decision deviates from the architecture
+    principle "Standard solution to standard problem." The company-specific
+    parts (validation rules, data governance definitions) can be delivered as
+    rulesets and APIs/MCPs that work with standard tools. Suggested adding a
+    standard alternative: Git + PR review + Spectral + standard editor +
+    governance API/MCP, with an explicit TCO comparison.</p>
+  </div>
+  <div class="callout">
+    <p><strong>Colleague A:</strong> The principle needs re-evaluating given what
+    AI enables now. The custom tool doesn't prevent anyone from using
+    Git+PR+Spectral if they prefer it.</p>
+  </div>
+
+  <div class="pagenav">
+    <a href="contract-first.html">← Contract-First Practice</a>
+    <a href="rebuttal.html">Rebuttal →</a>
+  </div>
+</main>
+
+<footer>Agora — Decision Record (de-identified)</footer>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 480" font-family="Segoe UI, Arial, sans-serif">
+  <defs>
+    <marker id="arrow4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1872c4"/>
+    </marker>
+  </defs>
+  <rect width="900" height="480" fill="#ffffff"/>
+  <text x="450" y="30" text-anchor="middle" fill="#1c2026" font-size="18" font-weight="700">Contract-First Flow, proved against Tiwaz</text>
+
+  <rect x="40" y="70" width="220" height="80" rx="8" fill="#f3f5f8" stroke="#c0691a"/>
+  <text x="150" y="98" text-anchor="middle" fill="#1c2026" font-size="13" font-weight="600">shared-models.yaml</text>
+  <text x="150" y="118" text-anchor="middle" fill="#5b6472" font-size="11">governed schemas</text>
+  <text x="150" y="134" text-anchor="middle" fill="#5b6472" font-size="11">e.g. Customer</text>
+
+  <rect x="340" y="70" width="220" height="80" rx="8" fill="#f3f5f8" stroke="#1872c4"/>
+  <text x="450" y="98" text-anchor="middle" fill="#1c2026" font-size="13" font-weight="600">openapi.yaml</text>
+  <text x="450" y="118" text-anchor="middle" fill="#5b6472" font-size="11">authored in Swagger Editor</text>
+  <text x="450" y="134" text-anchor="middle" fill="#5b6472" font-size="11">$ref's the shared schema</text>
+
+  <rect x="640" y="70" width="220" height="80" rx="8" fill="#f3f5f8" stroke="#1872c4"/>
+  <text x="750" y="98" text-anchor="middle" fill="#1c2026" font-size="13" font-weight="600">Git / PR review</text>
+  <text x="750" y="118" text-anchor="middle" fill="#5b6472" font-size="11">commit attributed to author</text>
+
+  <line x1="260" y1="110" x2="340" y2="110" stroke="#1872c4" stroke-width="2" marker-end="url(#arrow4)"/>
+  <line x1="560" y1="110" x2="640" y2="110" stroke="#1872c4" stroke-width="2" marker-end="url(#arrow4)"/>
+
+  <rect x="190" y="210" width="220" height="90" rx="8" fill="#f3f5f8" stroke="#1e8f5f"/>
+  <text x="300" y="238" text-anchor="middle" fill="#1c2026" font-size="13" font-weight="600">Spectral CLI (local)</text>
+  <text x="300" y="258" text-anchor="middle" fill="#5b6472" font-size="11">.spectral.yaml ruleset</text>
+  <text x="300" y="276" text-anchor="middle" fill="#5b6472" font-size="11">docker run stoplight/spectral</text>
+
+  <rect x="490" y="210" width="220" height="90" rx="8" fill="#f3f5f8" stroke="#1e8f5f"/>
+  <text x="600" y="238" text-anchor="middle" fill="#1c2026" font-size="13" font-weight="600">Spectral CI gate</text>
+  <text x="600" y="258" text-anchor="middle" fill="#5b6472" font-size="11">same ruleset file</text>
+  <text x="600" y="276" text-anchor="middle" fill="#5b6472" font-size="11">fail-severity=error</text>
+
+  <line x1="430" y1="150" x2="320" y2="210" stroke="#1e8f5f" stroke-width="2" marker-end="url(#arrow4)"/>
+  <line x1="470" y1="150" x2="580" y2="210" stroke="#1e8f5f" stroke-width="2" marker-end="url(#arrow4)"/>
+
+  <rect x="340" y="350" width="220" height="90" rx="8" fill="#f3f5f8" stroke="#1872c4"/>
+  <text x="450" y="378" text-anchor="middle" fill="#1c2026" font-size="13" font-weight="600">Backstage catalog</text>
+  <text x="450" y="398" text-anchor="middle" fill="#5b6472" font-size="11">type: url location</text>
+  <text x="450" y="416" text-anchor="middle" fill="#5b6472" font-size="11">api-docs plugin renders it</text>
+
+  <line x1="300" y1="300" x2="420" y2="350" stroke="#c7cdd6" stroke-width="2" marker-end="url(#arrow4)"/>
+  <line x1="600" y1="300" x2="480" y2="350" stroke="#c7cdd6" stroke-width="2" marker-end="url(#arrow4)"/>
+
+  <text x="330" y="185" text-anchor="middle" fill="#5b6472" font-size="11">verified: 95 problems (33 errors)</text>
+  <text x="595" y="185" text-anchor="middle" fill="#5b6472" font-size="11">vs. 49 (0 errors) stock oas ruleset</text>
+</svg>

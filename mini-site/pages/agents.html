@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agora — Agent Notes</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand"><span class="dot"></span> Agora</div>
+    <nav class="primary">
+      <a href="../index.html">Start Here</a>
+      <a href="readme.html">Overview</a>
+      <a href="guide.html">Guide</a>
+      <a href="contract-first.html">Contract-First</a>
+      <a href="decision.html">Decision Record</a>
+      <a href="rebuttal.html">Rebuttal</a>
+      <a href="roadmap.html">Roadmap</a>
+      <a href="agents.html" class="active">Agent Notes</a>
+    </nav>
+  </div>
+</div>
+
+<main>
+  <div class="hero">
+    <span class="badge">AGENTS.md</span>
+    <h1>Notes for Contributors (incl. AI Agents)</h1>
+    <p class="lede">Docker Compose stack for a local API-governance demo (nginx
+    "governance" registry + Swagger Editor + Backstage portal). No app code to
+    build/test — this repo is config/docs/compose only.</p>
+  </div>
+
+  <h2>Commands</h2>
+  <ul>
+    <li><code>make up</code> / <code>make down</code> / <code>make restart</code> — manage the stack</li>
+    <li><code>make build</code> / <code>make build-no-cache</code> — rebuild the Backstage image</li>
+    <li><code>make verify</code> — curl all 5 acceptance endpoints, expect 200s</li>
+    <li><code>make logs</code> / <code>make backstage-logs</code> / <code>make governance-logs</code></li>
+    <li><code>make clean</code> — full teardown incl. volumes and built images</li>
+  </ul>
+
+  <h2>Critical gotchas</h2>
+  <div class="callout bad">
+    <p><strong>Proxy:</strong> always verify with <code>curl --noproxy '*' &lt;url&gt;</code>, never
+    PowerShell <code>Invoke-WebRequest</code> — proxy-aware tools route <code>localhost</code>
+    through a corporate proxy and hang.</p>
+  </div>
+  <ul>
+    <li><strong>Backstage config is bind-mounted</strong> — just <code>docker compose restart backstage</code> after editing it. Only the <code>Dockerfile</code> requires a rebuild.</li>
+    <li><strong>Catalog locations must be <code>type: url</code></strong>, not <code>type: file</code> — the <code>$text</code> placeholder resolver needs a URL-schemed base.</li>
+    <li><strong><code>HOST</code> env var does nothing</strong> for the Backstage dev server; host binding is controlled only by <code>app.listen.host</code>/<code>backend.listen.host</code>.</li>
+    <li><strong><code>governance/shared-models.yaml</code></strong> is served directly by nginx — edits take effect on refresh, no rebuild/restart needed.</li>
+    <li>Swagger Editor image is pinned to <code>docker.swagger.io/swaggerapi/swagger-editor</code> to dodge a mirror block.</li>
+    <li>Windows: if a file rename/move fails with "in use" after <code>docker compose down</code>, retry the <code>down</code>, or use <code>robocopy /MOVE</code>.</li>
+  </ul>
+
+  <h2>Contract-first governance practice</h2>
+  <p>See the <a href="contract-first.html">Contract-First page</a> — the Spectral
+  governance ruleset and a worked example using the real Tiwaz Bonds Management
+  API.</p>
+  <div class="callout warn">
+    <p><strong>Tiwaz's own repo/CI is read-only reference material — never edit
+    files under <code>repos/tiwaz</code></strong>; all governance artifacts live in this
+    repo only.</p>
+  </div>
+
+  <div class="callout bad">
+    <p><strong>Secrets rule:</strong> any real company/org name from source material
+    (e.g. the original name behind "Company X" in the Decision Record) is
+    treated as a secret in this repo and must always be replaced with a
+    generic placeholder before anything is written to disk — never committed,
+    even in quoted reference text.</p>
+  </div>
+
+  <div class="pagenav">
+    <a href="roadmap.html">← Implementation Roadmap</a>
+    <a href="../index.html">Start Here →</a>
+  </div>
+</main>
+
+<footer>Agora — Agent Notes</footer>
+</body>
+</html>

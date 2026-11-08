@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agora — Implementation Roadmap</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand"><span class="dot"></span> Agora</div>
+    <nav class="primary">
+      <a href="../index.html">Start Here</a>
+      <a href="readme.html">Overview</a>
+      <a href="guide.html">Guide</a>
+      <a href="contract-first.html">Contract-First</a>
+      <a href="decision.html">Decision Record</a>
+      <a href="rebuttal.html">Rebuttal</a>
+      <a href="roadmap.html" class="active">Roadmap</a>
+      <a href="agents.html">Agent Notes</a>
+    </nav>
+  </div>
+</div>
+
+<main>
+  <div class="hero">
+    <span class="badge">Where to start</span>
+    <h1>Implementation Roadmap</h1>
+    <p class="lede">What the governance platform (Collibra/DataGalaxy stand-in)
+    actually feeds, what the CI pipeline actually lints, and the build order
+    that delivers value earliest.</p>
+  </div>
+
+  <h2>Two different artifacts, two different owners</h2>
+  <p>It's tempting to assume the data-governance platform is "where contracts
+  come from" and feeds the CI pipeline directly. It doesn't. Two distinct
+  artifacts flow through this pipeline:</p>
+
+  <table>
+    <tr><th>Artifact</th><th>Owner</th><th>Lives in</th><th>Role</th></tr>
+    <tr><td>Governed data definitions (e.g. <code>Customer</code>, <code>BondType</code>)</td><td>Data Governance</td><td><code>governance/shared-models.yaml</code> (Collibra stand-in)</td><td>Reusable schema fragments, <code>$ref</code>'d by contracts. Not itself an API contract.</td></tr>
+    <tr><td>API contract (<code>openapi.yaml</code>/<code>.json</code>)</td><td>The API team</td><td>The API's own repo (mirrored under <code>apis/</code>)</td><td>The thing that actually gets linted in CI and deployed/cataloged.</td></tr>
+  </table>
+
+  <div class="callout good">
+    <p>Collibra never goes near the CI pipeline directly. <strong>CI always lints the
+    API contract file</strong>, which happens to <code>$ref</code> into a Collibra-published
+    schema at author time. By the time CI lints the contract, that <code>$ref</code> is
+    just a URL string — Spectral doesn't need to resolve it to check
+    contract-level rules like versioned paths or <code>operationId</code>s.</p>
+  </div>
+
+  <h2>Build order</h2>
+  <p>Each step is independently useful — value before the whole pipeline is finished.</p>
+
+  <div class="diagram">
+    <img src="../assets/diagrams/build-order.svg" alt="Five-step build order timeline from Spectral CI gate to governance approval workflow">
+  </div>
+
+  <ol>
+    <li><strong>Spectral ruleset + CI gate, first.</strong> Zero Collibra/governance integration needed. Already proved value against Tiwaz (33 errors found with zero dependencies). Highest ROI.</li>
+    <li><strong>Contract repo convention.</strong> Decide where each service's contract lives and get it published as a CI artifact.</li>
+    <li><strong>Shared-schema publishing (the Collibra piece).</strong> Expose governed data definitions as a static, versioned, HTTP-reachable schema file(s). Start with the fields people get wrong most often — customer, money/currency, dates.</li>
+    <li><strong>Catalog (Backstage) last.</strong> Discoverability on top of artifacts that already exist, not a dependency of them.</li>
+    <li><strong>Governance approval workflow.</strong> A later layer on top of step 3 — a small queue/API in front of the schema publisher. Don't let it block starting.</li>
+  </ol>
+
+  <h2>Practical first move</h2>
+  <p>Pick one real, already-deployed service — Tiwaz is the proof case already
+  used here — and do steps 1 and 2 against it this week:</p>
+  <ul>
+    <li>Vendor <code>governance/.spectral.yaml</code> into the service's own repo.</li>
+    <li>Add the CI lint step shown in the Contract-First practice.</li>
+    <li>Get it failing/passing on real pull requests.</li>
+  </ul>
+  <p>That's demonstrable progress without waiting on any governance-platform
+  integration, and it's the same evidence basis used in the <a href="rebuttal.html">Rebuttal</a>.</p>
+
+  <div class="pagenav">
+    <a href="rebuttal.html">← Rebuttal</a>
+    <a href="agents.html">Agent Notes →</a>
+  </div>
+</main>
+
+<footer>Agora — Implementation Roadmap</footer>
+</body>
+</html>

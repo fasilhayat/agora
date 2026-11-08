@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agora — Day-to-Day Guide</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand"><span class="dot"></span> Agora</div>
+    <nav class="primary">
+      <a href="../index.html">Start Here</a>
+      <a href="readme.html">Overview</a>
+      <a href="guide.html" class="active">Guide</a>
+      <a href="contract-first.html">Contract-First</a>
+      <a href="decision.html">Decision Record</a>
+      <a href="rebuttal.html">Rebuttal</a>
+      <a href="roadmap.html">Roadmap</a>
+      <a href="agents.html">Agent Notes</a>
+    </nav>
+  </div>
+</div>
+
+<main>
+  <div class="hero">
+    <span class="badge">Guide</span>
+    <h1>Working with Agora — Day-to-Day Guide</h1>
+    <p class="lede">Practical workflow for running, changing, and verifying the Agora stack.</p>
+  </div>
+
+  <h2>Everyday commands</h2>
+  <table>
+    <tr><th>Task</th><th>Command</th></tr>
+    <tr><td>Start the stack (builds Backstage first time)</td><td><code>make up</code></td></tr>
+    <tr><td>Stop and remove containers</td><td><code>make down</code></td></tr>
+    <tr><td>Restart everything</td><td><code>make restart</code></td></tr>
+    <tr><td>Check container status</td><td><code>make ps</code></td></tr>
+    <tr><td>Tail all logs</td><td><code>make logs</code></td></tr>
+    <tr><td>Rebuild the Backstage image</td><td><code>make build</code> / <code>make build-no-cache</code></td></tr>
+    <tr><td>Run the acceptance checks</td><td><code>make verify</code></td></tr>
+    <tr><td>Full teardown incl. volumes and images</td><td><code>make clean</code></td></tr>
+  </table>
+
+  <h2>Typical session</h2>
+  <pre><code>cd agora
+make up            # start governance, swagger-editor, backstage
+make ps            # confirm all 3 containers are "Up"
+make verify         # confirm all 5 acceptance endpoints return 200</code></pre>
+
+  <h2>Adding a new API contract to the catalog</h2>
+  <ol>
+    <li>Create a new folder under <code>apis/</code>, e.g. <code>apis/my-new-api/</code>.</li>
+    <li>Add <code>openapi.yaml</code>. If it needs shared schemas, <code>$ref</code> them against the governance server:
+      <pre><code>$ref: 'http://localhost:8081/shared-models.yaml#/components/schemas/Customer'</code></pre>
+    </li>
+    <li>Add <code>catalog-info.yaml</code> modeled on <code>apis/sample-orders-api/catalog-info.yaml</code>
+      (<code>kind: API</code>, <code>spec.type: openapi</code>, <code>spec.definition</code> using <code>$text: ./openapi.yaml</code>).</li>
+    <li>Register the new location in <code>backstage/app-config.local.yaml</code> under <code>catalog.locations</code>
+      as a <strong><code>type: url</code></strong> entry — not <code>type: file</code> (see gotchas below).</li>
+    <li>Restart Backstage: <code>docker compose restart backstage</code>.</li>
+    <li>Verify at <code>http://localhost:7007/api/catalog/entities</code> and the catalog UI.</li>
+  </ol>
+
+  <h2>Troubleshooting</h2>
+  <div class="callout bad">
+    <p><strong>curl/browser hangs on localhost:</strong> you're behind a corporate proxy.
+    Use <code>curl.exe --noproxy '*' &lt;url&gt;</code> instead of PowerShell's <code>Invoke-WebRequest</code>.</p>
+  </div>
+  <div class="callout bad">
+    <p><strong>New/edited API doesn't appear in the catalog:</strong> check <code>docker compose logs backstage</code>.
+    The most common cause is a <code>catalog.locations</code> entry using <code>type: file</code> with an
+    absolute path — Backstage's <code>$text</code> placeholder resolver needs a URL-schemed base to
+    resolve the relative <code>./openapi.yaml</code> ref. Switch to <code>type: url</code> instead.</p>
+  </div>
+  <div class="callout warn">
+    <p><strong>File rename/move fails with "in use" on Windows:</strong> Docker Desktop can hold file
+    locks on bind-mounted directories even after <code>docker compose down</code> appears to finish.
+    Retry the <code>down</code>, or use <code>robocopy /MOVE</code> instead of <code>Rename-Item</code>/<code>Move-Item</code>.</p>
+  </div>
+
+  <div class="pagenav">
+    <a href="readme.html">← Overview</a>
+    <a href="contract-first.html">Contract-First Practice →</a>
+  </div>
+</main>
+
+<footer>Agora — Guide</footer>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agora — Overview</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand"><span class="dot"></span> Agora</div>
+    <nav class="primary">
+      <a href="../index.html">Start Here</a>
+      <a href="readme.html" class="active">Overview</a>
+      <a href="guide.html">Guide</a>
+      <a href="contract-first.html">Contract-First</a>
+      <a href="decision.html">Decision Record</a>
+      <a href="rebuttal.html">Rebuttal</a>
+      <a href="roadmap.html">Roadmap</a>
+      <a href="agents.html">Agent Notes</a>
+    </nav>
+  </div>
+</div>
+
+<main>
+  <div class="hero">
+    <span class="badge">Overview</span>
+    <h1>Agora</h1>
+    <p class="lede">A local marketplace for governed API contracts: a Design-First API
+    governance ecosystem in Docker, combining a governed shared-schema registry,
+    a contract editor, and a developer portal that catalogs it all.</p>
+  </div>
+
+  <p>Mimics a Design-First API governance ecosystem with three containers:</p>
+
+  <table>
+    <tr><th>Component</th><th>Stand-in for</th><th>URL</th></tr>
+    <tr><td>Data Governance (nginx)</td><td>Collibra / DataGalaxy</td><td>http://localhost:8081</td></tr>
+    <tr><td>API editor (Swagger Editor)</td><td>— (used directly)</td><td>http://localhost:8082</td></tr>
+    <tr><td rowspan="2">Developer portal (Backstage)</td><td rowspan="2">—</td><td>http://localhost:3000 (frontend)</td></tr>
+    <tr><td>http://localhost:7007 (backend/API)</td></tr>
+  </table>
+
+  <div class="diagram">
+    <img src="../assets/diagrams/agora-stack.svg" alt="Agora stack diagram showing governance, Swagger Editor, Backstage, Git and Spectral">
+    <figcaption>Only one container (governance/nginx) is an emulation. The editor, the lint engine, the portal, and Git are the real tools, unmodified.</figcaption>
+  </div>
+
+  <h2>Why some components are emulated and others aren't</h2>
+  <p>The enterprise tools this stack is based on are commercial SaaS products, so
+  most of them can't be pulled/run as Docker containers for local
+  prototyping. Only one component in this stack is a true <strong>emulator/stand-in</strong>
+  for a SaaS tool that can't be self-hosted:</p>
+
+  <div class="callout warn">
+    <p><strong>Data Governance (nginx)</strong> emulates Collibra / DataGalaxy. These are
+    SaaS-only data governance catalogs, so the <code>governance</code> nginx container
+    is a stand-in that serves governed shared schemas and API contracts to
+    approximate what a real governance registry would provide.</p>
+  </div>
+
+  <p>The other two components are <strong>not emulations</strong> — they are the actual tools
+  intended for real use, run as-is:</p>
+  <ul>
+    <li><strong>Swagger Editor</strong> is the real open-source contract-design tool this stack
+    uses in practice (not a stand-in for Stoplight/SwaggerHub — those are
+    SaaS alternatives not being targeted here).</li>
+    <li><strong>Backstage</strong> is the real developer portal this stack uses, run as-is.</li>
+  </ul>
+
+  <h2>Key endpoints</h2>
+  <ul>
+    <li>Shared governed data models: <code>http://localhost:8081/shared-models.yaml</code></li>
+    <li>Draft API contract: <code>http://localhost:8081/apis/sample-orders-api/openapi.yaml</code></li>
+    <li>Swagger Editor: <code>http://localhost:8082</code></li>
+    <li>Backstage catalog UI: <code>http://localhost:3000</code></li>
+    <li>Backstage catalog API: <code>http://localhost:7007/api/catalog/entities</code></li>
+  </ul>
+
+  <h2>Usage</h2>
+  <pre><code>docker compose up -d      # or: make up
+docker compose down       # or: make down</code></pre>
+
+  <div class="callout">
+    <p>On networks with a corporate HTTP proxy, verify with
+    <code>curl --noproxy '*' http://localhost:&lt;port&gt;</code> since proxy-aware tools
+    (including PowerShell's <code>Invoke-WebRequest</code>) may otherwise try to route
+    <code>localhost</code> through the proxy and time out.</p>
+  </div>
+
+  <h2>Known pitfalls</h2>
+  <ul>
+    <li><code>swaggerapi/swagger-editor</code> can be blocked on some corporate Docker Hub
+    mirrors — this stack pulls <code>docker.swagger.io/swaggerapi/swagger-editor</code> instead.</li>
+    <li>Swagger Editor listens on port 80 inside its container, mapped here as <code>8082:80</code>.</li>
+    <li>The <code>@backstage/create-app</code> CLI prompts interactively for an app name;
+    the Dockerfile pipes the name through stdin to keep the build non-interactive.</li>
+  </ul>
+
+  <div class="pagenav">
+    <a href="../index.html">← Start Here</a>
+    <a href="guide.html">Day-to-Day Guide →</a>
+  </div>
+</main>
+
+<footer>Agora — Overview</footer>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agora — Contract-First Practice</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand"><span class="dot"></span> Agora</div>
+    <nav class="primary">
+      <a href="../index.html">Start Here</a>
+      <a href="readme.html">Overview</a>
+      <a href="guide.html">Guide</a>
+      <a href="contract-first.html" class="active">Contract-First</a>
+      <a href="decision.html">Decision Record</a>
+      <a href="rebuttal.html">Rebuttal</a>
+      <a href="roadmap.html">Roadmap</a>
+      <a href="agents.html">Agent Notes</a>
+    </nav>
+  </div>
+</div>
+
+<main>
+  <div class="hero">
+    <span class="badge">Contract-First / Design-First Practice</span>
+    <h1>Contract-First Practice, proved against a real API</h1>
+    <p class="lede">Design REST API contracts before writing code, govern them with
+    shared schemas + lint rules, catalog them centrally, and gate CI on contract
+    quality — using a real external service, <strong>Tiwaz</strong> (a .NET Bonds Management
+    API), as the worked example.</p>
+  </div>
+
+  <div class="callout">
+    <p><strong>Scope note:</strong> Tiwaz's own repository and CI pipeline were <strong>not</strong>
+    modified as part of this. Everything lives in Agora: a mirrored snapshot of
+    Tiwaz's real contract, a governance ruleset, and an illustrative CI snippet.</p>
+  </div>
+
+  <h2>The pieces</h2>
+  <table>
+    <tr><th>Piece</th><th>Location</th><th>Purpose</th></tr>
+    <tr><td>Shared schemas</td><td><code>governance/shared-models.yaml</code></td><td>Common types (e.g. Customer) that multiple contracts <code>$ref</code> instead of redefining.</td></tr>
+    <tr><td>Lint ruleset</td><td><code>governance/.spectral.yaml</code></td><td>The governance gate: Spectral rules every contract should pass before merge/deploy.</td></tr>
+    <tr><td>Draft contract</td><td><code>apis/sample-orders-api/</code></td><td>A contract authored from scratch, $ref-ing shared schemas — "design-first, nothing exists yet."</td></tr>
+    <tr><td>Real contract snapshot</td><td><code>apis/tiwaz-bonds-api/</code></td><td>Point-in-time mirror of an already-deployed service's contract — "bring an existing API into governance."</td></tr>
+    <tr><td>Catalog</td><td><code>backstage/app-config.local.yaml</code></td><td>Registers both contracts in the Backstage API catalog/docs.</td></tr>
+  </table>
+
+  <div class="diagram">
+    <img src="../assets/diagrams/contract-first-flow.svg" alt="Contract-first flow from shared schema through editor, lint, CI, and catalog">
+    <figcaption>One governance ruleset, enforced identically at author-time and in CI.</figcaption>
+  </div>
+
+  <h2>Case study: bringing Tiwaz into governance</h2>
+  <p>Tiwaz (Bonds Management API) is a real, deployed .NET 8 service. Its CI
+  currently does <code>restore → build → test → dotnet-format → publish → docker build/push</code>.
+  <strong>Neither its CI nor CD validates the OpenAPI contract itself</strong> — only the code.</p>
+
+  <h3>Step 1 — pull the real contract</h3>
+  <pre><code>curl --noproxy '*' -k -L -o apis/tiwaz-bonds-api/openapi.json `
+  https://tiwaz.hayatnet.local/swagger/v1/swagger.json</code></pre>
+
+  <h3>Step 2 — catalog it</h3>
+  <p><code>apis/tiwaz-bonds-api/catalog-info.yaml</code> registers it as a Backstage <code>API</code>
+  entity, linking back to the live Swagger UI — same <code>type: url</code> pattern as the sample API.</p>
+
+  <h3>Step 3 — lint it against the governance ruleset (verified results)</h3>
+  <pre><code>docker run --rm -v "${PWD}:/tmp/work" stoplight/spectral lint `
+  /tmp/work/apis/tiwaz-bonds-api/openapi.json `
+  --ruleset /tmp/work/governance/.spectral.yaml</code></pre>
+
+  <p>Run against the live contract pulled on 2026-11-08:</p>
+  <table>
+    <tr><th>Ruleset</th><th>Problems found</th></tr>
+    <tr><td>Stock <code>spectral:oas</code> only</td><td><span class="tag warn">49</span> (0 errors, 49 warnings)</td></tr>
+    <tr><td>Agora's <code>governance/.spectral.yaml</code></td><td><span class="tag bad">95</span> (33 errors, 62 warnings)</td></tr>
+  </table>
+
+  <p>Real gaps surfaced in Tiwaz's actual contract: no <code>servers</code> entry, no
+  <code>operationId</code> on any of 18 operations, no operation descriptions, enum
+  schemas (<code>BondType</code>, <code>RedemptionType</code>) exposed as bare integers with no
+  description of what each value means, and every response documented as just
+  <code>"OK"</code>. Exactly the kind of things that break generated SDKs and confuse API
+  consumers — exactly what a CI gate is for.</p>
+
+  <h3>Step 4 — the CI gate (illustrative, not applied to Tiwaz)</h3>
+  <pre><code>- name: Lint OpenAPI contract
+  run: |
+    docker run --rm -v "${{ github.workspace }}:/tmp/work" stoplight/spectral lint \
+      /tmp/work/openapi/tiwaz-bonds-api.json --ruleset /tmp/work/.spectral.yaml \
+      --fail-severity=error</code></pre>
+
+  <h2>Keeping the snapshot current</h2>
+  <p><code>apis/tiwaz-bonds-api/openapi.json</code> is a snapshot, not a live proxy — re-run the
+  <code>curl</code> command whenever you want to re-validate against the current deployed contract.</p>
+
+  <div class="pagenav">
+    <a href="guide.html">← Guide</a>
+    <a href="decision.html">Decision Record →</a>
+  </div>
+</main>
+
+<footer>Agora — Contract-First Practice</footer>
+</body>
+</html>
