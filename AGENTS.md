@@ -44,3 +44,12 @@ See "Adding a new API contract to the catalog" in GUIDE.md - requires a new
 `apis/<name>/` folder (`openapi.yaml` + `catalog-info.yaml`) and a matching
 `type: url` entry in `backstage/app-config.local.yaml`, then
 `docker compose restart backstage`.
+
+## Contract-first governance practice
+See [CONTRACT-FIRST.md](CONTRACT-FIRST.md) - documents the Spectral
+governance ruleset (`governance/.spectral.yaml`) and a worked example using
+the real Tiwaz Bonds Management API (`repos/tiwaz`, live at
+`https://tiwaz.hayatnet.local/swagger`) as `apis/tiwaz-bonds-api/`.
+**Tiwaz's own repo/CI is read-only reference material - never edit files
+under `repos/tiwaz`**; all governance artifacts live in this repo only.
+

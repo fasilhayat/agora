@@ -25,3 +25,7 @@ catalog:
       target: http://governance/apis/sample-orders-api/catalog-info.yaml
       rules:
         - allow: [API]
+    - type: url
+      target: http://governance/apis/tiwaz-bonds-api/catalog-info.yaml
+      rules:
+        - allow: [API]

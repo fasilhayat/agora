@@ -1,0 +1,67 @@
+# Agora governance ruleset for REST API contracts.
+#
+# This is the canonical Spectral ruleset for the "design-first" / "contract-first"
+# practice documented in CONTRACT-FIRST.md. It is deliberately generic so any
+# team's OpenAPI contract can be linted against it - see CONTRACT-FIRST.md for
+# how it was validated against the real Tiwaz Bonds Management API contract
+# (https://tiwaz.hayatnet.local/swagger) as a worked example.
+#
+# Usage (from the repo that owns the contract, not from Agora):
+#   docker run --rm -v "${PWD}:/tmp/work" stoplight/spectral lint \
+#     /tmp/work/openapi.json --ruleset /tmp/work/.spectral.yaml
+#
+# Teams should vendor/copy this file into their own repo's CI pipeline rather
+# than depend on Agora at build time - Agora is the design/reference sandbox,
+# not a runtime dependency.
+extends:
+  - spectral:oas
+
+rules:
+  # Promote key stock OAS rules from warning to error - these are the ones
+  # that actually break consumer codegen or API-portal rendering if missing.
+  oas3-api-servers: error
+  operation-operationId: error
+  operation-tags: error
+  info-contact: error
+  info-description: error
+
+  # --- Repo-specific conventions enforced on top of spectral:oas ---
+
+  governed-operation-description:
+    description: Every operation must have a description for API consumers.
+    message: "Operation is missing a description: {{error}}"
+    given: "$.paths[*][*]"
+    severity: error
+    then:
+      field: description
+      function: truthy
+
+  governed-versioned-paths:
+    description: All paths must be versioned under /v{n}/... so breaking changes can ship as a new version.
+    message: "Path '{{property}}' is not versioned (expected a /v{n}/ prefix)"
+    given: "$.paths"
+    severity: error
+    then:
+      field: "@key"
+      function: pattern
+      functionOptions:
+        match: "^/v[0-9]+/"
+
+  governed-schema-description:
+    description: Every schema definition should document what it represents for API consumers.
+    message: "Schema is missing a description: {{error}}"
+    given: "$.components.schemas[*]"
+    severity: warn
+    then:
+      field: description
+      function: truthy
+
+  governed-no-generic-responses:
+    description: Responses should document more than a bare "OK"/"Success" string so consumers know the actual semantics.
+    message: "Response description is too generic, add specifics: {{error}}"
+    given: "$.paths[*][*].responses[*].description"
+    severity: warn
+    then:
+      function: pattern
+      functionOptions:
+        notMatch: "^(OK|Success|Successful)\\.?$"

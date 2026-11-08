@@ -1,0 +1,777 @@
+{
+  "openapi": "3.0.4",
+  "info": {
+    "title": "Bonds management API",
+    "description": "Bonds management API description",
+    "termsOfService": "https://finance.dk/terms",
+    "contact": {
+      "name": "Team Finance",
+      "url": "https://finance.dk",
+      "email": "fasil@finance.dk"
+    },
+    "version": "v1"
+  },
+  "paths": {
+    "/v1/bond/{isin}": {
+      "get": {
+        "tags": [
+          "Bonds"
+        ],
+        "parameters": [
+          {
+            "name": "isin",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Bonds"
+        ],
+        "parameters": [
+          {
+            "name": "isin",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/v1/bond/state/{isin}": {
+      "get": {
+        "tags": [
+          "Bonds"
+        ],
+        "parameters": [
+          {
+            "name": "isin",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/v1/bond/ticker/{isin}": {
+      "get": {
+        "tags": [
+          "Bonds"
+        ],
+        "parameters": [
+          {
+            "name": "isin",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/v1/bond": {
+      "post": {
+        "tags": [
+          "Bonds"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Bond"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Bonds"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Bond"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Bonds"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Bond"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/v1/bonds": {
+      "get": {
+        "tags": [
+          "Bonds"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/v1/interest-rates/benchmarks": {
+      "get": {
+        "tags": [
+          "Interest Rates"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/v1/validations/isin/{isin}": {
+      "get": {
+        "tags": [
+          "Isin"
+        ],
+        "parameters": [
+          {
+            "name": "isin",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/v1/isin/{countryCode}/{identifier}": {
+      "get": {
+        "tags": [
+          "Isin"
+        ],
+        "parameters": [
+          {
+            "name": "countryCode",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "identifier",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/v1/issuer/{nameShort}": {
+      "get": {
+        "tags": [
+          "Issuers"
+        ],
+        "parameters": [
+          {
+            "name": "nameShort",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Issuers"
+        ],
+        "parameters": [
+          {
+            "name": "nameShort",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/v1/issuer": {
+      "post": {
+        "tags": [
+          "Issuers"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Issuer"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Issuers"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Issuer"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/v1/issuers": {
+      "get": {
+        "tags": [
+          "Issuers"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AdditionalInformation": {
+        "type": "object",
+        "properties": {
+          "interestStartDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "firstInterestFixingDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "creditorPaymentDates": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "debtorPaymentDates": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "firstCreditorPaymentDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "monthsInEachInterestPeriod": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "monthsBetweenDrawings": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "paymentIntervalCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "initialCreditorPayments": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "businessDayConvention": {
+            "type": "string",
+            "nullable": true
+          },
+          "loanType": {
+            "type": "string",
+            "nullable": true
+          },
+          "loanTermRange": {
+            "type": "string",
+            "nullable": true
+          },
+          "isLoanRefinancing": {
+            "type": "boolean"
+          },
+          "investorInformationParticipation": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "isLockedMarking": {
+            "type": "boolean"
+          },
+          "isJointLiability": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Bond": {
+        "required": [
+          "isin",
+          "issuerLong",
+          "issuerShort"
+        ],
+        "type": "object",
+        "properties": {
+          "isin": {
+            "type": "string",
+            "nullable": true
+          },
+          "identifier": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true
+          },
+          "countryCode": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true
+          },
+          "issuerLong": {
+            "type": "string",
+            "nullable": true
+          },
+          "issuerShort": {
+            "type": "string",
+            "nullable": true
+          },
+          "bondType": {
+            "$ref": "#/components/schemas/BondType"
+          },
+          "interestRateType": {
+            "$ref": "#/components/schemas/InterestRateType"
+          },
+          "greenBond": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "seriesDesignation": {
+            "type": "string",
+            "nullable": true
+          },
+          "yearOfMaturity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "couponRate": {
+            "type": "number",
+            "format": "double"
+          },
+          "openingDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "closingDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "maturityDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "notificationDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "issuanceForm": {
+            "$ref": "#/components/schemas/IssuanceForm"
+          },
+          "issuanceMinDenomination": {
+            "type": "number",
+            "format": "double"
+          },
+          "issuanceMinTradeSize": {
+            "type": "string",
+            "nullable": true
+          },
+          "currencyDenominated": {
+            "type": "string",
+            "nullable": true
+          },
+          "currencyIndexed": {
+            "type": "string",
+            "nullable": true
+          },
+          "currencyBasisRate": {
+            "type": "number",
+            "format": "double"
+          },
+          "exchangeFixingMethodology": {
+            "type": "string",
+            "nullable": true
+          },
+          "exchangeFixingCalendar": {
+            "type": "string",
+            "nullable": true
+          },
+          "calculationAgent": {
+            "type": "string",
+            "nullable": true
+          },
+          "governmentGuarantee": {
+            "type": "string",
+            "nullable": true
+          },
+          "repaymentProfile": {
+            "$ref": "#/components/schemas/RepaymentProfile"
+          },
+          "redemptionDetails": {
+            "$ref": "#/components/schemas/RedemptionDetails"
+          },
+          "interestRateDetails": {
+            "$ref": "#/components/schemas/InterestRateDetails"
+          },
+          "fixingIntervalMonths": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "additionalInformation": {
+            "$ref": "#/components/schemas/AdditionalInformation"
+          }
+        },
+        "additionalProperties": false
+      },
+      "BondType": {
+        "enum": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "type": "integer",
+        "format": "int32"
+      },
+      "ConvertibleType": {
+        "enum": [
+          0,
+          1
+        ],
+        "type": "integer",
+        "format": "int32"
+      },
+      "FixingPeriod": {
+        "enum": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "type": "integer",
+        "format": "int32"
+      },
+      "InterestRateDetails": {
+        "type": "object",
+        "properties": {
+          "interestRateType": {
+            "$ref": "#/components/schemas/InterestRateType"
+          },
+          "referenceRate": {
+            "type": "string",
+            "nullable": true
+          },
+          "interestMargin": {
+            "type": "number",
+            "format": "double"
+          },
+          "preliminaryInterestMargin": {
+            "type": "number",
+            "format": "double"
+          },
+          "fixingPeriod": {
+            "$ref": "#/components/schemas/FixingPeriod"
+          },
+          "fixingMethodology": {
+            "type": "string",
+            "nullable": true
+          },
+          "fixingCalendar": {
+            "type": "string",
+            "nullable": true
+          },
+          "nextFixingDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "hasRateCap": {
+            "type": "boolean"
+          },
+          "capRate": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "hasRateFloor": {
+            "type": "boolean"
+          },
+          "floorRate": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "canSwitchToFixed": {
+            "type": "boolean"
+          },
+          "couponRate": {
+            "type": "number",
+            "format": "double"
+          },
+          "dayCountConvention": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "InterestRateType": {
+        "enum": [
+          0,
+          1,
+          2
+        ],
+        "type": "integer",
+        "format": "int32"
+      },
+      "IssuanceForm": {
+        "enum": [
+          0,
+          1
+        ],
+        "type": "integer",
+        "format": "int32"
+      },
+      "Issuer": {
+        "type": "object",
+        "properties": {
+          "nameShort": {
+            "type": "string",
+            "nullable": true
+          },
+          "nameLong": {
+            "type": "string",
+            "nullable": true
+          },
+          "countryCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "legalEntityIdentifier": {
+            "type": "string",
+            "nullable": true
+          },
+          "type": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "RedemptionDetails": {
+        "type": "object",
+        "properties": {
+          "redemptionType": {
+            "$ref": "#/components/schemas/RedemptionType"
+          },
+          "redemptionPrice": {
+            "$ref": "#/components/schemas/RedemptionPrice"
+          },
+          "negativeRateRedemptionPrice": {
+            "$ref": "#/components/schemas/RedemptionPrice"
+          }
+        },
+        "additionalProperties": false
+      },
+      "RedemptionPrice": {
+        "enum": [
+          0,
+          1,
+          2
+        ],
+        "type": "integer",
+        "format": "int32"
+      },
+      "RedemptionType": {
+        "enum": [
+          0,
+          1
+        ],
+        "type": "integer",
+        "format": "int32"
+      },
+      "RepaymentProfile": {
+        "type": "object",
+        "properties": {
+          "repaymentType": {
+            "$ref": "#/components/schemas/RepaymentType"
+          },
+          "isDeferredAmortizationAllowed": {
+            "type": "boolean"
+          },
+          "deferredAmortizationMaxYears": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "deferredAmortizationMaxTerms": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "convertible": {
+            "$ref": "#/components/schemas/ConvertibleType"
+          },
+          "callOption": {
+            "type": "string",
+            "nullable": true
+          },
+          "conversionPrice": {
+            "type": "string",
+            "nullable": true
+          },
+          "creditorCallNoticeMonths": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "convertibleSwitchOption": {
+            "type": "boolean"
+          },
+          "isInterestOnly": {
+            "type": "boolean",
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "RepaymentType": {
+        "enum": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "type": "integer",
+        "format": "int32"
+      }
+    },
+    "securitySchemes": {
+      "ApiKey": {
+        "type": "apiKey",
+        "description": "Enter your API key to access this API.",
+        "name": "X-API-KEY",
+        "in": "header"
+      }
+    }
+  },
+  "security": [
+    {
+      "ApiKey": []
+    }
+  ]
+}

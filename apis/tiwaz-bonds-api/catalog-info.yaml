@@ -1,0 +1,24 @@
+apiVersion: backstage.io/v1alpha1
+kind: API
+metadata:
+  name: tiwaz-bonds-api
+  description: >-
+    Bonds Management API (Tiwaz) - real production/dev contract mirrored here
+    as a point-in-time snapshot for cataloging and governance-rule validation.
+    Source of truth is the live service at https://tiwaz.hayatnet.local/swagger;
+    see CONTRACT-FIRST.md for how this snapshot is kept in sync and how it is
+    linted against governance/.spectral.yaml.
+  tags:
+    - production
+    - bonds
+    - treasury
+  links:
+    - url: https://tiwaz.hayatnet.local/swagger
+      title: Live Swagger UI
+spec:
+  type: openapi
+  lifecycle: production
+  owner: treasury
+  system: bonds-management
+  definition:
+    $text: ./openapi.json

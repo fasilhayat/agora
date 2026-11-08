@@ -56,6 +56,16 @@ A `Makefile` is included with convenience targets (`make up`, `make down`,
 > (including PowerShell's `Invoke-WebRequest`) may otherwise try to route
 > localhost through the proxy and time out.
 
+## Contract-first practice and the Tiwaz case study
+
+See [CONTRACT-FIRST.md](CONTRACT-FIRST.md) for the full design-first /
+contract-first workflow this stack demonstrates - shared schemas, a
+governance Spectral ruleset (`governance/.spectral.yaml`), and a worked
+example that mirrors the real **Tiwaz** Bonds Management API contract
+(`apis/tiwaz-bonds-api/`, source: https://tiwaz.hayatnet.local/swagger) into
+the catalog and lints it against the ruleset, with verified before/after
+results.
+
 ## Notes on the Backstage container
 
 - The image is built from `backstage/Dockerfile`, a multi-stage build based
