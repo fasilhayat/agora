@@ -112,14 +112,105 @@ reason to also own the editor - it would sit alongside
 standard tools consume via `$ref`/MCP, following the same pattern already
 proven here.
 
+## Honest caveats: where the "one workflow fits everything" framing breaks
+
+To keep this rebuttal intellectually honest, not every part of the decision
+doc's argument is wrong, and it's worth being precise about where the gaps
+actually are - because the gaps reveal a bigger problem with their approach
+than with standard tooling.
+
+### Gap 1 - AsyncAPI / Kafka event contracts are genuinely weaker in standard tooling today
+
+Swagger Editor is OpenAPI-only. The decision doc's point that "it's easier
+to include Event topics in the Contract First flow" with a custom tool than
+with SwaggerHub is **not disproved by anything in this repo** - Agora has no
+AsyncAPI editing or linting story yet. This is a legitimate, unanswered gap,
+not a vendor complaint in disguise like most of their other cons.
+
+### Gap 2 - CDC-derived Kafka schemas don't fit *either* workflow, and that's the real lesson
+
+Push further on the event-contract point and a sharper problem appears:
+schemas produced by **CDC connectors** (e.g. Debezium reading a database's
+change log) aren't designed by anyone. The event schema is generated
+automatically from the source table's column list the moment the table
+exists, and changes the moment the table does. There is no human sitting
+in an editor - custom or standard - picking governed field definitions and
+submitting new ones for approval. **The decision doc's entire proposed
+workflow (find/reuse approved definitions -> link to fields -> submit new
+ones for governance approval) has nothing to attach to here.**
+
+This matters most for primary/foreign key fields in CDC payloads:
+
+- A CDC-emitted `customer_id: integer` FK is structural/relational plumbing,
+  not a business attribute. It doesn't have its own meaning to "define" -
+  it's a pointer to the `Customer` entity, not a value of one. Forcing it
+  through a rule like `governed-schema-description` (this repo's own
+  ruleset, `governance/.spectral.yaml`) either produces a vacuous
+  description or fabricates business meaning that isn't there.
+- The thing worth governing for an FK is the **relationship** ("this
+  event's `customer_id` references the `Customer` entity"), which belongs
+  in a data-lineage/ER model, not in the same field-definition catalog as
+  `Email` or `BondType`.
+- CDC schema change-safety is a **compatibility** problem (backward/forward
+  compatible evolution via a real schema registry - Avro/Protobuf/JSON
+  Schema compatibility modes), not a **descriptive-linting** problem like
+  "every field needs a description." Spectral-style rules are close to
+  meaningless against a schema shape dictated by a DBA's table design that
+  can change out from under the event contract at any time.
+
+### Why this is actually an argument *for* standard tooling, not against it
+
+This is the important part: **neither** a custom editor **nor** Swagger
+Editor solves the CDC/FK case, because it isn't an editor problem at all -
+it's a schema-registry-and-lineage problem. The decision doc's mistake is
+assuming one integrated workflow (human designs contract -> picks governed
+field -> submits for approval) covers every contract-producing scenario in
+the company. It doesn't, and building a single monolithic custom tool
+around that one workflow **locks out** the scenarios that don't fit the
+assumption - CDC/event-sourced schemas being the clearest example, but the
+same would apply to any other schema that's generated rather than
+hand-designed.
+
+Standard, composable tooling is more resilient to exactly this kind of
+scenario precisely *because* it isn't one tool trying to cover every case:
+
+- Spectral + a shared-schema registry handles hand-authored REST contracts
+  (proven here against Tiwaz).
+- A real schema registry with compatibility-mode enforcement is the correct
+  tool for CDC/Kafka payload safety - a separate, already-standard
+  component (e.g. Confluent Schema Registry), not something the OpenAPI
+  editor needs to also become.
+- A lineage/ER layer handles FK/relationship governance, tagging surrogate
+  keys as structural rather than forcing them into the business-glossary
+  field catalog.
+
+Painting all of this with one brush - "one integrated contract-design tool
+for both APIs and events" - trades flexibility for the appearance of
+completeness. When a new scenario shows up that doesn't match the assumed
+workflow (CDC being a concrete, not hypothetical, example in event-driven
+architectures), a monolithic custom tool has to be extended or bent to fit;
+a composable standard-tooling stack just adds the missing component
+(schema registry, lineage tool) alongside the ones already working, without
+having to touch the editor, the ruleset, or the contracts already governed.
+
 ## Bottom line
 
 Agora is a working, Git-native, Contract-First pipeline built entirely
 from standard, unmodified components (Swagger Editor, Spectral, Backstage,
 Git/GitHub), validated against a real production API (Tiwaz) rather than
 a synthetic example. It directly contradicts "no tool on the market can
-deliver this workflow" - the workflow doesn't require a market tool to
-deliver the *whole* thing, because governance-as-code (`.spectral.yaml`)
-and governed-schema-as-data (`shared-models.yaml`) are enough to make
-standard tools behave exactly like the proposed custom one, at a fraction
-of the \~5-7 MM/year estimated ongoing cost of Alternative 2.
+deliver this workflow" for the REST/OpenAPI case - the workflow doesn't
+require a market tool to deliver the *whole* thing, because
+governance-as-code (`.spectral.yaml`) and governed-schema-as-data
+(`shared-models.yaml`) are enough to make standard tools behave exactly
+like the proposed custom one, at a fraction of the \~5-7 MM/year estimated
+ongoing cost of Alternative 2.
+
+Where real gaps remain (AsyncAPI editing, CDC-derived schema governance),
+the fix is to add the missing standard component for that specific
+scenario, not to retroactively justify a single monolithic editor as the
+answer to every contract-producing scenario in the company. That one-size
+assumption is exactly what causes the custom-tool approach to lock out
+scenarios it didn't anticipate - the composable, standard-tooling approach
+is the more flexible one precisely because it doesn't require every
+scenario to fit through the same workflow.
