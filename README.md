@@ -9,9 +9,29 @@ Mimics a Design-First API governance ecosystem with three containers:
 | Component                    | Stand-in for          | URL                                      |
 |-------------------------------|------------------------|-------------------------------------------|
 | Data Governance (nginx)       | Collibra / DataGalaxy  | http://localhost:8081                     |
-| API editor (Swagger Editor)   | Stoplight / SwaggerHub | http://localhost:8082                     |
+| API editor (Swagger Editor)   | - (used directly)      | http://localhost:8082                     |
 | Developer portal (Backstage)  | -                       | http://localhost:3000 (frontend)          |
 |                                |                         | http://localhost:7007 (backend/API)       |
+
+### Why some components are emulated and others aren't
+
+The enterprise tools this stack is based on are commercial SaaS products, so
+most of them can't be pulled/run as Docker containers for local
+prototyping. Only one component in this stack is a true **emulator/stand-in**
+for a SaaS tool we can't self-host:
+
+- **Data Governance (nginx)** emulates **Collibra / DataGalaxy**. These are
+  SaaS-only data governance catalogs, so the `governance` nginx container
+  is a stand-in that serves governed shared schemas and API contracts to
+  approximate what a real governance registry would provide.
+
+The other two components are **not emulations** - they are the actual tools
+intended for real use, run as-is:
+
+- **Swagger Editor** is the real open-source contract-design tool this stack
+  uses in practice (not a stand-in for Stoplight/SwaggerHub - those are
+  SaaS alternatives we are not targeting here).
+- **Backstage** is the real developer portal this stack uses, run as-is.
 
 ## Key endpoints
 
