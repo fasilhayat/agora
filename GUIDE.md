@@ -2,6 +2,7 @@
 
 This guide covers the practical workflow for running, changing, and verifying
 the Agora stack. For the architecture overview, see [README.md](README.md).
+See [START-HERE.md](START-HERE.md) for the full doc index.
 
 ## Prerequisites
 

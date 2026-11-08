@@ -3,6 +3,10 @@
 > Architectural decision document on OpenAPI / Event-contract tooling.
 > All references to the original company name have been replaced with
 > **Company X** for use as a de-identified case study.
+>
+> See [`../START-HERE.md`](../START-HERE.md) for the full doc index, and
+> [`standard-tooling-rebuttal.md`](standard-tooling-rebuttal.md) for why
+> this repo contradicts the "no standard tool can do this" argument below.
 
 ## Current State
 

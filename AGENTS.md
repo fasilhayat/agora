@@ -6,7 +6,9 @@ this repo is config/docs/compose only.
 
 Full details live in [README.md](README.md) (architecture) and
 [GUIDE.md](GUIDE.md) (day-to-day workflow). Read `GUIDE.md` before making
-changes - it covers the full edit/restart/verify loop. Highlights:
+changes - it covers the full edit/restart/verify loop. See
+[START-HERE.md](START-HERE.md) for the full doc index, including the
+organizational decision-record docs under `docs/`. Highlights:
 
 ## Commands
 - `make up` / `make down` / `make restart` - manage the stack

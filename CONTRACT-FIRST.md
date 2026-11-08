@@ -1,5 +1,7 @@
 # Contract-First / Design-First Practice
 
+> See [START-HERE.md](START-HERE.md) for the full doc index.
+
 This doc captures the practice Agora is meant to demonstrate: design REST API
 contracts before writing code, govern them with shared schemas + lint rules,
 catalog them centrally, and gate CI on contract quality - and it uses a real

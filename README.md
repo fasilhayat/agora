@@ -4,6 +4,8 @@
 > governance ecosystem in Docker, combining a governed shared-schema
 > registry, a contract editor, and a developer portal that catalogs it all.
 
+> New here? Start at [`START-HERE.md`](START-HERE.md) for the full doc index.
+
 Mimics a Design-First API governance ecosystem with three containers:
 
 | Component                    | Stand-in for          | URL                                      |
