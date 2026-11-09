@@ -68,6 +68,19 @@ example that mirrors the real **Tiwaz** Bonds Management API contract
 the catalog and lints it against the ruleset, with verified before/after
 results.
 
+## Standard-tooling counterproposal
+
+Agora is a proof-of-concept counterproposal to building a custom contract
+editor. The evidence and limits of the current stack are discussed in
+[`docs/standard-tooling-rebuttal.md`](docs/standard-tooling-rebuttal.md).
+The copied
+[`docs/standard-tooling-proposal.md`](docs/standard-tooling-proposal.md)
+sketches a broader target, including a glossary export and reusable CI
+workflow; those additions are proposals, not components currently
+implemented here. See
+[`docs/implementation-roadmap.md`](docs/implementation-roadmap.md) for how
+the proof could be extended.
+
 ## Notes on the Backstage container
 
 - The image is built from `backstage/Dockerfile`, a multi-stage build based

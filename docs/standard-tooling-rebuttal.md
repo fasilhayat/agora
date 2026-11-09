@@ -12,6 +12,12 @@
 > [`implementation-roadmap.md`](implementation-roadmap.md) for where to
 > start building this for real.
 
+The copied [`standard-tooling-proposal.md`](standard-tooling-proposal.md)
+in this directory is a complementary proposal for a broader standard-tooling
+target. Its glossary export and reusable CI workflow are not implemented in
+Agora; the evidence below is limited to the current local stack and the
+explicitly illustrative CI example.
+
 ## The claim being tested
 
 From the decision doc's "Decision" section:
@@ -41,7 +47,7 @@ component in this repo, with Tiwaz as the live, non-hypothetical test.
 | Integrate with API standards | Spectral custom ruleset, generic + repo-specific rules | `governance/.spectral.yaml` |
 | Must support Contract First | Design-first authoring in Swagger Editor against a Git-tracked `openapi.yaml`, nothing deployed first | `apis/sample-orders-api/` |
 | Integrate well with GitHub | Git repo is the source of truth; PRs are the review mechanism (no webhook relay, no opaque SaaS push) | this repo itself |
-| Validation in both pipeline and dev tools | Same `.spectral.yaml` ruleset runnable via `docker run stoplight/spectral` locally **and** in CI | `CONTRACT-FIRST.md` Step 3 (local) / Step 4 (CI) |
+| Validation in both pipeline and dev tools | Local Spectral validation is demonstrated; the CI gate is illustrative, not deployed | `CONTRACT-FIRST.md` Step 3 (local) / Step 4 (illustrative) |
 | Flexible, developer's-choice tooling | Source of truth is plain YAML/JSON in Git - any IDE works (VS Code, Swagger Editor, CLI) | no lock-in anywhere in this repo |
 | Catalog / discoverability for non-developers | Backstage developer portal, real tool not an emulation, with API docs plugin out of the box | `backstage/`, catalog UI at :3000 |
 
@@ -78,17 +84,19 @@ against a real, already-deployed service instead of a greenfield demo:
    operations, no operation descriptions, enum schemas (`BondType`,
    `RedemptionType`) exposed as bare integers with no documented meaning,
    and every response described as just `"OK"`.
-4. **Defined the CI gate** that would enforce this going forward
-   (`CONTRACT-FIRST.md` Step 4) - inserted after build, before the Docker
-   image is pushed, using the *exact same* `.spectral.yaml` file used
-   locally. One ruleset, two enforcement points, satisfying the "validation
-   in both pipeline and dev tools" requirement directly.
+4. **Sketched the CI gate** that could enforce this going forward
+   (`CONTRACT-FIRST.md` Step 4). It is illustrative and has not been applied
+   to Tiwaz; it uses the same `.spectral.yaml` as the demonstrated local
+   run. This shows a path to two enforcement points, not a deployed CI gate.
 
-None of this required forking an editor, building an MCP server, or
-committing to 5-7 MM/year of ongoing maintenance. The governance-specific
-value - the custom validation rules and the shared schema definitions -
-lives in two small, plain-text files (`governance/.spectral.yaml`,
-`governance/shared-models.yaml`) that any standard tool can consume.
+The demonstrated work required neither forking an editor nor building an
+MCP server. The governance-specific value - custom validation rules and
+shared schema definitions - lives in two plain-text files
+(`governance/.spectral.yaml`, `governance/shared-models.yaml`) that standard
+tools can consume. The decision document estimates 2 MM/year for editor
+enhancements and 3-4 MM/year for new functionality such as MCP servers; the
+cost of maintaining Agora's proposed reusable workflow and glossary
+integration has not been estimated.
 
 ## Answering the specific "cons" raised against Alternative 1
 
@@ -111,6 +119,12 @@ reason to also own the editor - it would sit alongside
 `governance/shared-models.yaml` as another HTTP-served endpoint that
 standard tools consume via `$ref`/MCP, following the same pattern already
 proven here.
+
+The copied proposal in
+[`standard-tooling-proposal.md`](standard-tooling-proposal.md) sketches a
+glossary export and reusable workflow as possible extensions. It is not
+evidence that these components exist in Agora; its workflow example should
+be reviewed before being adopted.
 
 ## Honest caveats: where the "one workflow fits everything" framing breaks
 
@@ -195,16 +209,18 @@ having to touch the editor, the ruleset, or the contracts already governed.
 
 ## Bottom line
 
-Agora is a working, Git-native, Contract-First pipeline built entirely
-from standard, unmodified components (Swagger Editor, Spectral, Backstage,
-Git/GitHub), validated against a real production API (Tiwaz) rather than
-a synthetic example. It directly contradicts "no tool on the market can
-deliver this workflow" for the REST/OpenAPI case - the workflow doesn't
-require a market tool to deliver the *whole* thing, because
+Agora is a local, Git-native proof of Contract-First governance built from
+standard components (Swagger Editor, Spectral, Backstage, and Git/GitHub),
+validated against a real production API (Tiwaz) rather than a synthetic
+example. It challenges "no tool on the market can deliver this workflow"
+for the REST/OpenAPI case: the demonstrated governance does not require a
+custom editor, while CI enforcement remains a proposed next step. The
+workflow doesn't require a market tool to deliver the *whole* thing, because
 governance-as-code (`.spectral.yaml`) and governed-schema-as-data
-(`shared-models.yaml`) are enough to make standard tools behave exactly
-like the proposed custom one, at a fraction of the \~5-7 MM/year estimated
-ongoing cost of Alternative 2.
+(`shared-models.yaml`) already support the local proof. The source
+decision's 5-7 MM/year figure combines editor enhancements and new MCP
+functionality; the ongoing cost of the standard-tooling target has not been
+estimated, so this evidence does not establish a like-for-like cost saving.
 
 Where real gaps remain (AsyncAPI editing, CDC-derived schema governance),
 the fix is to add the missing standard component for that specific

@@ -34,9 +34,15 @@ reading order - start here, then branch out depending on what you need.
   the practical "where do we start" follow-up: clarifies that the
   governance platform (Collibra/DataGalaxy, emulated by
   `governance/shared-models.yaml`) publishes *data definitions* consumed
-  via `$ref`, not the API contract itself; CI always lints the contract
-  file. Lays out the build order (ruleset+CI gate first, schema publishing
-  third, catalog last) and the recommended first concrete move.
+  via `$ref`, not the API contract itself; the target CI gate should lint
+  the contract file. Lays out the build order (ruleset+CI gate first,
+  schema publishing third, catalog last) and the recommended first concrete
+  move.
+- [`docs/standard-tooling-proposal.md`](docs/standard-tooling-proposal.md) -
+  a copied proposal challenging the custom-editor approach and sketching a
+  standard-tooling target. Its
+  glossary export and reusable CI workflow are proposals, not current
+  repository capabilities.
 
 ## 4. For AI agents / contributors
 
@@ -50,5 +56,6 @@ reading order - start here, then branch out depending on what you need.
 | Just want to run it locally | README.md -> GUIDE.md |
 | Understand the governance workflow being demonstrated | CONTRACT-FIRST.md |
 | Need the business case / "why not just buy SwaggerHub" argument | docs/openapi-tooling-decision.md -> docs/standard-tooling-rebuttal.md |
+| Review the copied standard-tooling proposal | docs/standard-tooling-proposal.md -> docs/standard-tooling-rebuttal.md -> docs/implementation-roadmap.md |
 | Ready to actually start building this for a real team | docs/implementation-roadmap.md |
 | Making changes to this repo (incl. as an AI agent) | AGENTS.md |

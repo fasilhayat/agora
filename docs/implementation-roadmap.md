@@ -6,21 +6,30 @@
 > Background: [`openapi-tooling-decision.md`](openapi-tooling-decision.md)
 > and [`standard-tooling-rebuttal.md`](standard-tooling-rebuttal.md).
 
+The copied [`standard-tooling-proposal.md`](standard-tooling-proposal.md)
+in this directory sketches a broader standard-tooling counterproposal,
+including a glossary export and reusable CI workflow. Treat those as
+proposed extensions: this repository currently contains neither a glossary
+exporter nor a reusable CI workflow, and its CI example is illustrative.
+Review that example before adopting it.
+
 ## Two different artifacts, two different owners
 
 It's tempting to assume the data-governance platform (Collibra/DataGalaxy,
 emulated here by `governance/shared-models.yaml`) is "where contracts come
-from" and feeds the CI pipeline directly. It isn't. Two distinct artifacts
-flow through this pipeline, with different owners and different roles:
+from" and feeds the CI pipeline directly. It isn't. The target pipeline has
+two distinct artifacts, with different owners and different roles:
 
 | Artifact | Owner | Lives in | Role |
 |---|---|---|---|
 | **Governed data definitions** (e.g. `Customer`, `BondType`) | Data Governance | `governance/shared-models.yaml` (Collibra stand-in) | Reusable schema *fragments*, `$ref`'d by contracts. Not itself an API contract. |
-| **API contract** (`openapi.yaml` / `openapi.json`) | The API team (e.g. Tiwaz, Orders team) | The API's own repo (mirrored here under `apis/`) | The thing that actually gets linted in CI and deployed/cataloged. |
+| **API contract** (`openapi.yaml` / `openapi.json`) | The API team (e.g. Tiwaz, Orders team) | The API's own repo (mirrored here under `apis/`) | The artifact the target CI gate should lint and that is deployed/cataloged. |
 
-Collibra never goes near the CI pipeline directly. **CI always lints the
-API contract file**, which happens to `$ref` into a Collibra-published
-schema at author time:
+The governance platform does not need to feed the CI pipeline directly.
+**The target CI gate should lint the API contract file**, which may `$ref`
+into a governance-published schema at author time. In this repository,
+Spectral validation has been demonstrated locally; the CI gate is still
+proposed.
 
 ```yaml
 customer:
@@ -34,6 +43,12 @@ like versioned paths, `operationId`s, or descriptions (see
 *referenced schema's* shape is a nice-to-have layered on later, not a
 starting requirement.
 
+The copied proposal's `glossary.yaml` is a possible additional metadata
+source for validation (for example, forbidden names or classifications);
+it is not a replacement for the reusable schemas in
+`governance/shared-models.yaml`. Defining and integrating that glossary
+would be separate work.
+
 ## Build order
 
 Each step below is independently useful - you get real value before the
@@ -41,8 +56,9 @@ whole pipeline is finished, and later steps don't block on earlier ones
 being "done," just started.
 
 1. **Spectral ruleset + CI gate, first.** Needs zero Collibra/governance
-   integration. Already proved value against a real service with zero
-   dependencies: see the Tiwaz lint run in
+   integration. The ruleset's value has been demonstrated locally against a
+   real service; the CI gate remains to be implemented. See the Tiwaz lint
+   run in
    [`CONTRACT-FIRST.md`](../CONTRACT-FIRST.md) (33 errors / 62 warnings
    found, vs. 0 errors from stock `spectral:oas`). Highest ROI, lowest
    dependency - do this before anything else.
